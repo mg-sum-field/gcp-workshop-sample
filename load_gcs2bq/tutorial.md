@@ -15,7 +15,8 @@ Cloud Functionsにて関数を実行するためのサービスアカウント�
 
 サービスアカウントの作成には、以下のコマンドを実行します:
 ```bash
-gcloud iam service-accounts create functions-executor \
+gcloud iam service-accounts create \
+  functions-executor \
   --display-name "functions-executor"
 ```
 ※右側のコピーボタンを押すと、直接Cloud Shellに貼り付けられます。
@@ -23,6 +24,8 @@ gcloud iam service-accounts create functions-executor \
 
 ## サービスアカウントへの権限付与
 
+<walkthrough-watcher-constant key="project-id">
+</walkthrough-watcher-constant>
 functions-executor@{{project-id}}.iam.gserviceaccount.com に必要な権限を付与します。
 
 必要な権限は以下の5つです。
