@@ -66,7 +66,7 @@ gsutil mb -b on gs://{{project-id}}-input
 ## BigQueryデータセットの作成
 以下のコマンドを実行し、データセットを作成します:
 ```bash
-bq mk -d **<任意のデータセット名>**
+bq mk -d <任意のデータセット名>
 ```
 
 
@@ -76,7 +76,7 @@ bq mk -d **<任意のデータセット名>**
 </walkthrough-editor-open-file>
 *  DATASET_NAMEの値を、次のように変更します。
 ```
-DATASET_NAME : **<作成したデータセット名>**
+DATASET_NAME : <作成したデータセット名>
 ```
 
 
