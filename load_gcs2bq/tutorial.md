@@ -24,9 +24,7 @@ gcloud iam service-accounts create \
 
 ## サービスアカウントへの権限付与
 
-<walkthrough-watcher-constant key="project-id">
-</walkthrough-watcher-constant>
-functions-executor@{{project-id}}.iam.gserviceaccount.com に必要な権限を付与します。
+functions-executor@"{{project-id}}".iam.gserviceaccount.com に必要な権限を付与します。
 
 必要な権限は以下の5つです。
 
@@ -42,7 +40,7 @@ functions-executor@{{project-id}}.iam.gserviceaccount.com に必要な権限を�
 
 バケットの作成には、以下のコマンドを実行します:
 ```bash
-gsutil mb -b on gs://{{project-id}}-functions
+gsutil mb -b on gs://"{{project-id}}"-functions
 ```
 
 
@@ -50,7 +48,7 @@ gsutil mb -b on gs://{{project-id}}-functions
 
 バケットの作成には、以下のコマンドを実行します:
 ```bash
-gsutil mb -b on gs://{{project-id}}-input
+gsutil mb -b on gs://"{{project-id}}"-input
 ```
 このバケットが、今回作成する関数のトリガーとなります。
 
@@ -65,9 +63,9 @@ gcloud beta functions deploy load_gcs2bq \
   --runtime python37 \
   --timeout 180s \
   --env-vars-file env.yaml \
-  --service-account functions-executor@{{project-id}}.iam.gserviceaccount.com \
-  --stage-bucket {{project-id}}-functions \
-  --trigger-bucket {{project-id}}-input
+  --service-account functions-executor@"{{project-id}}".iam.gserviceaccount.com \
+  --stage-bucket "{{project-id}}"-functions \
+  --trigger-bucket "{{project-id}}"-input
 ```
 
 
@@ -75,7 +73,7 @@ gcloud beta functions deploy load_gcs2bq \
 
 先ほどデプロイした関数の動作を確認するため、以下のコマンドを実行してGCSにファイルを配置します:
 ```bash
-gsutil cp ./sample.csv gs://{{project-id}}-input/
+gsutil cp ./sample.csv gs://"{{project-id}}"-input/
 ```
 
 
