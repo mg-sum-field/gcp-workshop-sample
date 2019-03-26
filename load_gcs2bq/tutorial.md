@@ -38,7 +38,12 @@ functions-executor@{{project-id}}.iam.gserviceaccount.com に必要な権限を�
 *  Cloud Function閲覧者
 *  ログ書き込み
 *  ストレージのオブジェクト管理者
-<!-- TODO 付与方法を記載 -->
+
+[IAMと管理](https://console.cloud.google.com/iam-admin/iam?project={{project-id}})を開き、
+
+functions-executor@{{project-id}}.iam.gserviceaccount.com を追加して
+
+上記の権限を付与してください。
 
 
 ## Cloud Functionの関数デプロイ先となるGCSバケットを作成
@@ -56,6 +61,23 @@ gsutil mb -b on gs://{{project-id}}-functions
 gsutil mb -b on gs://{{project-id}}-input
 ```
 このバケットが、今回作成する関数のトリガーとなります。
+
+
+## BigQueryデータセットの作成
+以下のコマンドを実行し、データセットを作成します:
+```bash
+bq mk -d **<任意のデータセット名>**
+```
+
+
+## リソースの修正
+デプロイの前に、テキストエディタで環境変数ファイルを修正します。
+<walkthrough-editor-open-file filePath="env.yaml" text="env.yamlを開く">
+</walkthrough-editor-open-file>
+*  DATASET_NAMEの値を、次のように変更します。
+```
+DATASET_NAME : **<作成したデータセット名>**
+```
 
 
 ## リソースのデプロイ
@@ -81,8 +103,11 @@ gcloud beta functions deploy load_gcs2bq \
 gsutil cp ./sample.csv gs://{{project-id}}-input/
 ```
 
+## 結果の確認
+[BigQueryコンソール](https://console.cloud.google.com/bigquery?project={{project-id}})を開き、  
+env.yamlで指定したデータセットの中に  
+**sample**というテーブルが作成されていることを確認してください。
 
-<!-- TODO 確認方法を記載 -->
 
 
 ## チュートリアル完了
@@ -90,6 +115,3 @@ gsutil cp ./sample.csv gs://{{project-id}}-input/
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
 関数が動いたことを確認したら、このチュートリアルは完了です。
-
-バケット名やデータセット名を変えたりして、GCSトリガー関数でやりたいことに近づけていきましょう。
-
