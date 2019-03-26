@@ -103,8 +103,8 @@ Advanced >
 
 ## リソースの修正
 デプロイの前に、テキストエディタで環境変数ファイルを修正します。
-<walkthrough-editor-open-file filePath="gcp-workshop-sample/extract_bq2gcs/env.yaml" text="env.yamlを開く">
-</walkthrough-editor-open-file>
+*  <walkthrough-cloud-shell-editor-icon></walkthrough-cloud-shell-editor-icon>このアイコンをクリックして、エディタを起動します。
+*  `gcp-workshop-sample/extract_bq2gcs/env.yaml`を開きます。
 *  OUTPUT_BUCKET_NAMEの値を、次のように変更します。
 ```
 OUTPUT_BUCKET_NAME : {{project-id}}-output
