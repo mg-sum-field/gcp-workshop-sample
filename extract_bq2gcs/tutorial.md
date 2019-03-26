@@ -73,7 +73,7 @@ gcloud pubsub topics create bq-query
 ## BigQueryデータセットの作成
 以下のコマンドを実行し、データセットを作成します:
 ```bash
-bq mk -d **<任意のデータセット名>**
+bq mk -d <任意のデータセット名>
 ```
 
 
@@ -91,7 +91,7 @@ bq mk -d **<任意のデータセット名>**
 ```
 Display name: github_commiters_best100  
 Schedule: every day 11:00  
-Destination dataset: **<作成したデータセット名>**
+Destination dataset: <作成したデータセット名>
 Destination table: github_commiters_best100_{run_time|"%Y%m%d"}
 Write preference: WRITE_TRUNCATE
 Advanced > 
