@@ -1,48 +1,120 @@
+# Cloud Functions (Cloud Storageトリガー) のチュートリアル
+
+## 概要
+
+Cloud Storage(以下GCS)にファイルを追加または更新することで起動する関数を作成し、GCSトリガーによるCloud Functionsの使用方法を学びます。
+
+**所要時間**: 約 15 分
+
+**次へ** ボタンを押し、チュートリアルを進めてください。
 
 
+## プロジェクトの選択
+関数を作成するプロジェクトを選択してください。
+<walkthrough-project-billing-setup permissions="cloudfunctions.functions.create"></walkthrough-project-billing-setup>
 
-<!-- 
-# デモ2
+
+## サービスアカウントの作成
+
+Cloud Functionsにて関数を実行するためのサービスアカウントを作成します。
+
+サービスアカウントの作成には、以下のコマンドを実行します:
+```bash
+gcloud iam service-accounts create \
+  functions-executor \
+  --display-name "functions-executor"
+```
+※右側のコピーボタンを押すと、直接Cloud Shellに貼り付けられます。
 
 
-# サービスアカウントの作成
+## サービスアカウントへの権限付与
 
-# Pub/Subのトピックを設定
+functions-executor@{{project-id}}.iam.gserviceaccount.com に必要な権限を付与します。
+
+必要な権限は以下の5つです。
+
+*  BigQueryデータオーナー
+*  BigQueryジョブユーザー
+*  Cloud Function閲覧者
+*  ログ書き込み
+*  ストレージのオブジェクト管理者
+
+[IAMと管理](https://console.cloud.google.com/iam-admin/iam?project={{project-id}})を開き、
+
+functions-executor@{{project-id}}.iam.gserviceaccount.com を追加して
+
+上記の権限を付与してください。
+
+
+## Cloud Functionの関数デプロイ先となるGCSバケットを作成
+
+バケットの作成には、以下のコマンドを実行します:
+```bash
+gsutil mb -b on gs://{{project-id}}-functions
+```
+
+
+## BigQueryからファイルを出力する先となるGCSバケットを作成
+
+バケットの作成には、以下のコマンドを実行します:
+```bash
+gsutil mb -b on gs://{{project-id}}-output
+```
+今回作成する関数により、このバケットにファイルが作成されます。
+
+
+## Pub/Subのトピックを設定
+以下のコマンドを実行し、トピックを作成します:
+```bash
 gcloud pubsub topics create bq-query
+```
 
-# Schedule Queryの設定
-Display name: github_commiters_best100
-Schedule: every day 11:00
-Destination dataset: gcp_demo
+
+## BigQueryデータセットの作成
+以下のコマンドを実行し、データセットを作成します:
+```bash
+bq mk -d **<任意のデータセット名>**
+```
+
+
+## Schedule Queryの設定 - 1
+* github_commiters_best100.sqlを開き、中のSELECT文をコピーします。
+<walkthrough-editor-open-file filePath="github_commiters_best100.sql" text="サンプルSQLを開く">
+</walkthrough-editor-open-file>
+* [BigQuery旧UI](https://bigquery.cloud.google.com/scheduledqueries/{{project-id}})を開きます。
+* **COMPOSE QUERY**をクリックし、入力欄にSELECT文を貼り付けます。
+
+
+## Schedule Queryの設定 - 2
+* ** Schedule Query** を押します。
+* 追加された入力欄を以下のように設定します。
+```
+Display name: github_commiters_best100  
+Schedule: every day 11:00  
+Destination dataset: **<作成したデータセット名>**
 Destination table: github_commiters_best100_{run_time|"%Y%m%d"}
 Write preference: WRITE_TRUNCATE
 Advanced > 
-  Cloud Pub/Sub topic: projects/gcp-demo-20190326/topics/bq-query
+  Cloud Pub/Sub topic: projects/{{project-id}}/topics/bq-query
   Send email notifications: True
-
-# Functionソース配置先GCSバケットを作成
-
-# 出力先GCSバケットを作成
-gsutil mb -b on gs://gcp-demo-20190326-output
-
+```
+* **Add**を押します。
 
 
 ## リソースの修正
-デプロイの前に、テキストエディタでCloud Function資材を修正します。
-
-
-*  <walkthrough-cloud-shell-editor-icon></walkthrough-cloud-shell-editor-icon>このアイコンをクリックして、エディタを起動します。
-*  `gcp-workshop-sample/load_gcs2bq/env.yaml`を開きます。
+デプロイの前に、テキストエディタで環境変数ファイルを修正します。
+<walkthrough-editor-open-file filePath="env.yaml" text="env.yamlを開く">
+</walkthrough-editor-open-file>
 *  OUTPUT_BUCKET_NAMEの値を、次のように変更します。
 ```
 OUTPUT_BUCKET_NAME : {{project-id}}-output
-DATASET_NAME : **<任意のデータセット名>**
 ```
 
 
+## リソースのデプロイ
 
-
-# Cloud Shellにて資材のデプロイ
+関数をデプロイするため、以下のコマンドを実行します:
+```bash
 cd ~
 ls -l
 cd gcp-workshop-sample/extract_bq2gcs
@@ -50,128 +122,28 @@ gcloud beta functions deploy extract_bq2gcs \
   --runtime python37 \
   --timeout 180s \
   --env-vars-file env.yaml \
-  --service-account functions-executor@gcp-demo-20190326.iam.gserviceaccount.com \
-  --stage-bucket gcp-demo-20190326-functions \
+  --service-account functions-executor@g{{project-id}}.iam.gserviceaccount.com \
+  --stage-bucket {{project-id}}-functions \
  --trigger-topic bq-query
-
-# Schedule Queryを手動実行
-
--->
-
-
-
-
-
-
-
-
-
-
-<!-- 
-
-### Add underlying items to a step
-
-To list items that are part of a tutorial step under a particular step heading, add them as such:
-
-```
-### This is an item under your first step
 ```
 
-The tutorial engine also supports Markdown features like links and images. Note, **including HTML is not supported**.
 
-To recap, a **title** is marked with a **level 1** heading, a **step** with a **level 2** heading, and an **item** with a **level 3** heading.
+## Schedule Queryを手動実行
+先ほどデプロイした関数の動作を確認するため、Schedule Queryを実行します。
+* [BigQuery旧UI](https://bigquery.cloud.google.com/scheduledqueries/{{project-id}})で、先ほど作成したSchedule Queryを選びます。
+* **Start manual runs**を押します。
+* マークが緑に変わったら実行完了です。
 
 
-### Restart to see changes
-
-To see your changes, restart the tutorial by running:
+## 結果の確認
+以下のコマンドを実行し、ファイルが作成されていることを確認します。
 ```bash
-cloudshell launch-tutorial -d tutorial.md
-```
-
-Next up, adding helpful links and icons to your tutorial.
-
-
-## Special tutorial features
-
-In the Markdown for your tutorial, you may include special directives that are specific to the tutorial engine. These allow you to include helpful shortcuts to actions that you may ask a user to perform.
-
-
-### Trigger file actions in the text editor
-To include a link to <walkthrough-editor-open-file filePath="cloud-shell-tutorials/tutorial.md">open a file for editing</walkthrough-editor-open-file>, use:
-
-```
-<walkthrough-editor-open-file
-    filePath="cloud-shell-tutorials/tutorial.md">
-    open a file for editing
-</walkthrough-editor-open-file>
+gsutil ls ./sample.csv gs://{{project-id}}-output/
 ```
 
 
-### Highlight a UI element
+## チュートリアル完了
 
-You can also direct the user’s attention to an element on the screen that you want them to interact with.
+<walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
-You may want to show people where to find the web preview icon to view the web server running in their Cloud Shell virtual machine in a new browser tab.
-
-Display the web preview icon <walkthrough-web-preview-icon></walkthrough-web-preview-icon> by including this in your tutorial’s Markdown:
-
-```
-<walkthrough-web-preview-icon>
-</walkthrough-web-preview-icon>
-```
-
-To create a link that shines a <walkthrough-spotlight-pointer spotlightId="devshell-web-preview-button">spotlight on the web preview icon</walkthrough-spotlight-pointer>, add the following:
-
-```
-<walkthrough-spotlight-pointer
-    spotlightId="devshell-web-preview-button">
-    spotlight on the web preview icon
-</walkthrough-spotlight-pointer>
-```
-
-You can find a list of supported spotlight targets in the [documentation for Cloud Shell Tutorials](https://cloud.google.com/shell/docs/tutorials).
-
-You've now built a tutorial to help onboard users!
-
-Next, you’ll create a button that allows users to launch your tutorial in Cloud Shell.
-
-
-## Creating a button for your site
-
-Here is how you can create a button for your website, blog, or open source project that will allow users to launch the tutorial you just created.
-
-
-### Creating an HTML Button
-
-To build a link for the 'Open in Cloud Shell' feature, start with this base HTML and replace the following:
-
-**`YOUR_REPO_URL_HERE`** with the project repository URL that you'd like cloned for your users in their launched Cloud Shell environment.
-
-**`TUTORIAL_FILE.md`** with your tutorial’s Markdown file. The path to the file is relative to the root directory of your project repository.
-
-```
-<a  href="https://console.cloud.google.com/cloudshell/open?git_repo=YOUR_REPO_URL_HERE&tutorial=TUTORIAL_FILE.md">
-    <img alt="Open in Cloud Shell" src="http://gstatic.com/cloudssh/images/open-btn.png">
-</a>
-```
-
-Once you've edited the above HTML with the appropriate values for `git_repo` and `tutorial`, use the HTML snippet to generate the 'Open in Cloud Shell' button for your project.
-
-
-### Creating a Markdown Button
-
-If you are posting the 'Open in Cloud Shell' button in a location that accepts Markdown instead of HTML, use this example instead:
-
-```
-[![Open this project in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=YOUR_REPO_URL_HERE&page=editor&tutorial=TUTORIAL_FILE.md)
-```
-
-Likewise, once you've replaced `YOUR_REPO_URL_HERE` and `TUTORIAL_FILE.md` in the 'Open in Cloud Shell' URL as described above, the resulting Markdown snippet can be used to create your button.
-
--->
-
-
-
-
-
+関数が動いたことを確認したら、このチュートリアルは完了です。
