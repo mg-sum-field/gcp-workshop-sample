@@ -11,7 +11,7 @@ Cloud Storage(以下GCS)にファイルを追加または更新することで�
 
 ## プロジェクトの選択
 関数を作成するプロジェクトを選択してください。
-<walkthrough-project-billing-setup permissions="cloudfunctions.*"></walkthrough-project-billing-setup>
+<walkthrough-project-billing-setup permissions="cloudfunctions.functions.create"></walkthrough-project-billing-setup>
 
 
 ## サービスアカウントの作成
