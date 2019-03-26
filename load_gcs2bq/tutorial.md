@@ -9,7 +9,12 @@ Cloud Storage(以下GCS)にファイルを追加または更新することで�
 **次へ** ボタンを押し、チュートリアルを進めてください。
 
 
-## 1、サービスアカウントの作成
+## プロジェクトの選択
+関数を作成するプロジェクトを選択してください。
+<walkthrough-project-billing-setup permissions="cloudfunctions.*"></walkthrough-project-billing-setup>
+
+
+## サービスアカウントの作成
 
 Cloud Functionsにて関数を実行するためのサービスアカウントを作成します。
 
