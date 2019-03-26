@@ -72,8 +72,8 @@ bq mk -d <任意のデータセット名>
 
 ## リソースの修正
 デプロイの前に、テキストエディタで環境変数ファイルを修正します。
-<walkthrough-editor-open-file filePath="gcp-workshop-sample/load_gcs2bq/env.yaml" text="env.yamlを開く">
-</walkthrough-editor-open-file>
+*  <walkthrough-cloud-shell-editor-icon></walkthrough-cloud-shell-editor-icon>このアイコンをクリックして、エディタを起動します。
+*  `gcp-workshop-sample/load_gcs2bq/env.yaml`を開きます。
 *  DATASET_NAMEの値を、次のように変更します。
 ```
 DATASET_NAME : <作成したデータセット名>
