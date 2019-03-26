@@ -103,7 +103,7 @@ Advanced >
 
 ## リソースの修正
 デプロイの前に、テキストエディタで環境変数ファイルを修正します。
-<walkthrough-editor-open-file filePath="env.yaml" text="env.yamlを開く">
+<walkthrough-editor-open-file filePath="gcp-workshop-sample/extract_bq2gcs/env.yaml" text="env.yamlを開く">
 </walkthrough-editor-open-file>
 *  OUTPUT_BUCKET_NAMEの値を、次のように変更します。
 ```
