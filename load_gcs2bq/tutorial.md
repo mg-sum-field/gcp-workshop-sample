@@ -72,7 +72,7 @@ bq mk -d <任意のデータセット名>
 
 ## リソースの修正
 デプロイの前に、テキストエディタで環境変数ファイルを修正します。
-<walkthrough-editor-open-file filePath="load_gcs2bq/env.yaml" text="env.yamlを開く">
+<walkthrough-editor-open-file filePath="gcp-workshop-sample/load_gcs2bq/env.yaml" text="env.yamlを開く">
 </walkthrough-editor-open-file>
 *  DATASET_NAMEの値を、次のように変更します。
 ```
